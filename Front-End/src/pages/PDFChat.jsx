@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/TextLayer.css';
+import { getDocument } from 'pdfjs-dist';
 
 // Setup PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -12,9 +13,22 @@ const PDFChat = () => {
     const [file, setFile] = useState(null);
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
+    const [selectedText, setSelectedText] = useState('');
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
+    };
+
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile && selectedFile.type === 'application/pdf') {
+            setFile(selectedFile);
+            setPageNumber(1);
+            setSelectedText('');
+        } else {
+            alert('Please upload a valid PDF file.');
+        }
     };
 
     const goToPrevPage = () =>
@@ -23,108 +37,111 @@ const PDFChat = () => {
     const goToNextPage = () =>
         setPageNumber((prev) => (prev + 1 >= numPages ? numPages : prev + 1));
 
-    const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile && selectedFile.type === 'application/pdf') {
-            setFile(selectedFile);
-            setPageNumber(1);
-        } else {
-            alert('Please upload a valid PDF file.');
+    // 👇 Extract clean text using PDF.js
+    const extractTextFromPage = async (file, pageNumber) => {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await getDocument({ data: arrayBuffer }).promise;
+            const page = await pdf.getPage(pageNumber);
+            const content = await page.getTextContent();
+            const strings = content.items.map((item) => item.str);
+            return strings.join(' ').replace(/\s+/g, ' ').trim();
+        } catch (error) {
+            console.error('Text extraction failed:', error);
+            return 'Failed to extract text.';
         }
     };
 
+    const analyzeTextFromPDF = async () => {
+        setIsAnalyzing(true);
+        setSelectedText('');
+        setTimeout(async () => {
+            const extracted = await extractTextFromPage(file, pageNumber);
+            setSelectedText(extracted);
+            setIsAnalyzing(false);
+        }, 2000); // 2s animation
+    };
+
     return (
+        <div className="min-h-[100dvh] bg-gray-900 p-4 flex text-white gap-4">
+            {/* Left Side: PDF Viewer */}
+            <div className="w-[70%] bg-gray-800 rounded-xl p-4 shadow-lg relative">
+                <h1 className="text-2xl font-bold mb-4 text-center">Talk to Your PDF</h1>
 
-        <div className="min-h-[100dvh] bg-gray-900 p-6 flex justify-center items-start">
-            <div className="max-w-4xl w-full bg-gray-800 rounded-2xl shadow-lg p-8">
-                <h1 className="text-3xl font-bold text-center mb-8 text-white">
-                    Talk to Your PDF
-                </h1>
-
-                <div className="mb-8 text-center">
-                    <label
-                        htmlFor="pdf-upload"
-                        className="block mb-2 text-sm font-medium text-gray-300"
-                    >
-                        Upload your PDF file
-                    </label>
+                <div className="mb-4 text-center">
                     <input
                         id="pdf-upload"
                         type="file"
                         accept="application/pdf"
                         onChange={handleFileChange}
                         className="mx-auto block w-full max-w-sm border border-gray-700 rounded-lg px-3 py-2 text-sm
-          text-gray-200 bg-gray-900 shadow-sm
-          file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
-          file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
+              text-gray-200 bg-gray-900 shadow-sm
+              file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+              file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
                     />
                 </div>
 
                 {file && (
                     <>
-                        {/* Top navigation buttons */}
-                        <div className="flex justify-between items-center mb-6">
+                        {/* Controls */}
+                        <div className="flex justify-between items-center mb-4">
                             <button
                                 onClick={goToPrevPage}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md disabled:opacity-50 transition"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
                                 disabled={pageNumber === 1}
                             >
                                 Prev
                             </button>
 
-                            <p className="text-gray-300 font-semibold">
-                                Page {pageNumber} of {numPages}
-                            </p>
+                            <button
+                                onClick={analyzeTextFromPDF}
+                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
+                            >
+                                Analyze This Page
+                            </button>
 
                             <button
                                 onClick={goToNextPage}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md disabled:opacity-50 transition"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
                                 disabled={pageNumber === numPages}
                             >
                                 Next
                             </button>
                         </div>
 
-                        {/* PDF Display */}
-                        <div className="border border-gray-700 rounded-lg shadow-lg bg-gray-900">
+                        {/* PDF Viewer */}
+                        <div className="relative">
                             <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                                 <Page
                                     pageNumber={pageNumber}
-                                    width={800}    // sets the width of the PDF page
+                                    width={900}
                                     renderTextLayer={true}
                                     renderAnnotationLayer={false}
-                                    className="mx-auto"
+                                    className="mx-auto relative z-10"
                                 />
                             </Document>
-                        </div>
 
-                        {/* Bottom navigation buttons */}
-                        <div className="flex justify-between items-center mt-6">
-                            <button
-                                onClick={goToPrevPage}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md disabled:opacity-50 transition"
-                                disabled={pageNumber === 1}
-                            >
-                                Prev
-                            </button>
-
-                            <p className="text-gray-300 font-semibold">
-                                Page {pageNumber} of {numPages}
-                            </p>
-
-                            <button
-                                onClick={goToNextPage}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md disabled:opacity-50 transition"
-                                disabled={pageNumber === numPages}
-                            >
-                                Next
-                            </button>
+                            {/* Animation Overlay */}
+                            {isAnalyzing && (
+                                <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center rounded-lg">
+                                    <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin" />
+                                </div>
+                            )}
                         </div>
                     </>
                 )}
             </div>
-        </div>
 
+            {/* Right Side: Text Output */}
+            <div className="w-[30%] bg-gray-800 rounded-xl p-4 shadow-lg h-[90vh] overflow-y-auto sticky top-2">
+                <h2 className="text-xl font-semibold mb-4">Selected Text</h2>
+                {selectedText ? (
+                    <pre className="whitespace-pre-wrap text-gray-200 text-sm">{selectedText}</pre>
+                ) : (
+                    <p className="text-gray-400 text-sm">Click "Analyze This Page" to extract clean text.</p>
+                )}
+            </div>
+        </div>
     );
 };
 
