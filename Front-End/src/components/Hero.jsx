@@ -1,63 +1,104 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/banner-img.png"; // replace with actual path
-
+import logo from "../assets/banner-img.png";
 import Tilt from "react-parallax-tilt";
+import { motion } from "framer-motion";
+import { Typewriter } from "react-simple-typewriter";
 
 export default function Hero() {
     return (
-        <section className="relative bg-gray-900 text-white h-[100dvh] flex items-center justify-center overflow-hidden px-4 py-24">
+        <section className="relative bg-gray-900 text-white h-[100dvh] flex flex-col md:flex-row items-center justify-center overflow-hidden px-4 py-24">
             {/* Blurred Background Bubbles */}
-            <div className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-gradient-to-br from-blue-600 to-purple-600 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-            <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+            <div className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-gradient-to-br from-blue-600 to-purple-600 rounded-full blur-3xl opacity-30 animate-pulse" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full blur-3xl opacity-30 animate-pulse" />
 
-            {/* Layout Container */}
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12 max-w-6xl w-full px-4">
-                {/* Left: Clean Text Section */}
-                <div className="w-full md:w-1/2 px-10 py-16 text-center">
-                    <h1 className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight text-white drop-shadow">
-                        Highlight Chat AI
-                    </h1>
-                    <p className="text-lg md:text-xl mb-8 text-gray-200 max-w-xl mx-auto">
-                        Instantly talk to AI about anything you highlight on the web. No
-                        copy-pasting. Just select and ask.
-                    </p>
-                    <div className="flex justify-center gap-4 flex-wrap">
+            {/* Left Text Content */}
+            <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center pt-[10%] md:text-left mb-12 md:mb-0 md:w-1/2 z-10 md:p-8 "
+            >
+                <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight drop-shadow">
+                    Highlight It. Ask Anything.
+                </h1>
+
+                <p className="text-lg md:text-xl text-gray-300 mb-4">
+                    Powered by AI. Built for students, professionals, researchers — and you.
+                </p>
+
+                <p className="text-xl font-semibold text-blue-400 mb-8 h-8">
+                    <Typewriter
+                        words={[
+                            "Summarize legal documents.",
+                            "Translate PDFs instantly.",
+                            "Get insights from research papers.",
+                            "Extract action items from emails.",
+                            "Simplify complex blogs or news.",
+                            "Ask questions on any web page.",
+                        ]}
+                        loop={0}
+                        cursor
+                        cursorStyle="|"
+                        typeSpeed={50}
+                        deleteSpeed={40}
+                        delaySpeed={2000}
+                    />
+                </p>
+
+                <div className="w-full flex flex-col items-center md:items-start gap-4 mt-6">
+                    {/* Primary Action Buttons */}
+                    <div className="flex flex-row justify-center md:justify-start gap-4 flex-wrap w-full">
                         <a
                             href="https://chromewebstore.google.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-blue-600 hover:bg-blue-700 transition-colors px-6 py-3 rounded-xl text-white text-lg font-semibold shadow-md"
+                            className="bg-blue-600 hover:bg-blue-700 transition-colors px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-white text-sm sm:text-lg font-semibold shadow-md text-center"
                         >
                             Add to Chrome
                         </a>
+
                         <Link
                             to="/pdf-chat"
-                            className="bg-white text-black px-6 py-3 rounded-xl text-lg font-semibold shadow-md hover:bg-gray-100 transition-colors"
+                            className="bg-white text-black px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-lg font-semibold shadow-md hover:bg-gray-100 transition-colors text-center"
                         >
-                            Sign In
+                            Try PDF Chat →
                         </Link>
                     </div>
+
+                    {/* Google SSO Button */}
+                    <Link
+                        to="/signin"
+                        className="bg-white text-gray-900 px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-lg font-semibold shadow-md hover:bg-gray-100 transition-colors flex items-center gap-2"
+                    >
+                        {/* <img
+                            src="https://www.svgrepo.com/show/475656/google-color.svg"
+                            alt="Google"
+                            className="w-4 sm:w-5 h-4 sm:h-5"
+                        /> */}
+                        <span>Tap in for free. Let AI cook 🧠🔥</span>
+                    </Link>
                 </div>
 
-                <Tilt
-                    scale={1.2}
-                    tiltMaxAngleX={20}
-                    tiltMaxAngleY={20}
-                    className="w-full md:w-1/2 flex items-center justify-center"
-                >
-                    <div className="relative w-full flex justify-center">
-                        {/* Optional Soft Glow */}
-                        <div className="absolute -inset-8 rounded-3xl bg-gradient-to-tr from-blue-500 to-purple-600 blur-3xl opacity-25"></div>
+            </motion.div>
 
-                        {/* Logo Image scaled up */}
-                        <img
-                            src={logo}
-                            alt="Highlight Chat AI Logo"
-                            className="relative max-h-[100vh] w-auto object-contain"
-                        />
-                    </div>
-                </Tilt>
-            </div>
+            {/* Right Tilt Image */}
+            <Tilt
+                scale={1.2}
+                tiltMaxAngleX={20}
+                tiltMaxAngleY={20}
+                className="w-full md:w-1/2 flex items-center justify-center z-10"
+            >
+                <div className="relative w-full flex justify-center">
+                    <div className="absolute -inset-8 rounded-3xl bg-gradient-to-tr from-blue-500 to-purple-600 blur-3xl opacity-25" />
+                    <img
+                        src={logo}
+                        alt="Highlight Chat AI Logo"
+                        className="relative max-h-[100vh] w-auto object-contain"
+                    />
+                </div>
+            </Tilt>
+            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-gray-900 z-0" />
         </section>
     );
 }
+

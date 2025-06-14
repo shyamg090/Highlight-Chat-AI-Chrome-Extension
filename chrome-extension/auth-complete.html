@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Auth Complete</title>
+  </head>
+  <body>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      if (token) {
+        chrome.storage.local.set({ authToken: token }, () => {
+          document.body.innerHTML =
+            "<h2 style='text-align:center;'>✅ Login successful. You can close this tab. OR It will auto close in 2 seconds</h2>";
+          // Optionally close tab after 2 seconds
+          setTimeout(() => window.close(), 2000);
+        });
+      } else {
+        document.body.innerHTML =
+          "<h2 style='text-align:center;'>❌ Login failed. No token found.</h2>";
+      }
+    </script>
+  </body>
+</html>

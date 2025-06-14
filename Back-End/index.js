@@ -54,6 +54,23 @@ app.post('/save', (req, res) => {
     res.json({ message: 'Chat saved successfully!' });
 });
 
+app.get('/auth/google', (req, res) => {
+    console.log('GET /auth/google endpoint was called');
+    //google sso
+    const code = "hhdhdhddhdhhhhd" 
+    res.redirect(`http://localhost:3000/v2/auth/callback?code=${code}`);
+    // res.json({ message: 'Chat saved successfully!' });
+});
+
+app.get('/v2/auth/callback', (req, res) => {
+    console.log('GET /v2/auth/callback endpoint was called');
+    //google sso 
+    console.log('Callback received with code:', req.query.code);
+    const token = "nifirjijeijrowrjweoirfjerwoifjeoirej";
+    res.redirect(`http://localhost:5173/auth/sso?token=${token}`);
+});
+
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

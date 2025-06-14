@@ -16,6 +16,7 @@
     "service_worker": "background.js"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_title": "HighlightChat",
     "default_icon": {
       "16": "icon.png",
@@ -39,7 +40,8 @@
       "resources": [
         "sidebar.html",
         "sidebar.css",
-        "sidebar.js"
+        "sidebar.js",
+        "auth-complete.html"
       ],
       "matches": [
         "<all_urls>"
@@ -54,5 +56,10 @@
   },
   "side_panel": {
     "default_path": "sidebar.html"
+  },
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:5173/*"
+    ]
   }
 }

@@ -118,7 +118,7 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("selectionchange", () => {
     const selectionText = window.getSelection().toString().trim();
-    if (selectionText.length === 0) {
+    if (selectionText.length === 0 && floatingBtn) {
         floatingBtn.style.display = "none";
     }
 });

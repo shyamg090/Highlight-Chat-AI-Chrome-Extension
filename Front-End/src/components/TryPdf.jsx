@@ -1,26 +1,74 @@
+import Tilt from "react-parallax-tilt";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function TryPdf() {
     return (
-        <section className="py-20 bg-gray-900 px-6 text-center text-gray-200">
-            <h2 className="text-3xl font-bold mb-6 text-white drop-shadow">
-                Need to Ask Questions from a PDF?
-            </h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto">
-                Upload your PDF and ask anything. Perfect for students, researchers, and professionals.
-            </p>
-            <img
-                src="https://images.unsplash.com/photo-1745151485547-8d428247c1ff?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="PDF Chat"
-                className="w-full max-w-3xl mx-auto mb-8 rounded-lg shadow-lg shadow-blue-700/50"
-            />
-            <Link
-                to="/pdf-chat"
-                className="inline-block bg-blue-600 text-white px-8 py-3 rounded hover:bg-blue-700 text-lg font-medium shadow-md"
-            >
-                Go to PDF Chat →
-            </Link>
-        </section>
+        <section className="relative py-24 px-6 bg-gradient-to-b from-gray-900 to-gray-950 text-center text-gray-200 overflow-hidden">
+            {/* Top background glow */}
+            <div className="absolute top-[-100px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-[120px] z-0" />
 
-    )
+            <motion.h2
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg relative z-10"
+            >
+                Ask Anything Any Anywhere ✨
+            </motion.h2>
+
+            <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="text-lg md:text-xl mb-12 max-w-2xl mx-auto text-gray-300 relative z-10"
+            >
+                Students, researchers, lawyers — now you can talk to your documents. Just upload and chat with AI.
+            </motion.p>
+
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.7, delay: 0.4 }}
+                viewport={{ once: true }}
+                className="relative z-10"
+            >
+                <Tilt
+                    tiltMaxAngleX={8}
+                    tiltMaxAngleY={8}
+                    perspective={1000}
+                    scale={1.02}
+                    transitionSpeed={1000}
+                    glareEnable={true}
+                    glareMaxOpacity={0.2}
+                    glareColor="#00BFFF"
+                    glarePosition="all"
+                    className="max-w-4xl mx-auto mb-12 rounded-xl shadow-blue-700/30"
+                >
+                    <img
+                        src="https://image.lexica.art/full_jpg/76e3ea1f-b545-4e52-810f-c74e5da6669c"
+                        alt="PDF Chat"
+                        className="rounded-xl w-full h-auto shadow-2xl"
+                    />
+                </Tilt>
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                viewport={{ once: true }}
+                className="relative z-10"
+            >
+                <Link
+                    to="/pdf-chat"
+                    className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full hover:from-blue-700 hover:to-purple-700 text-lg font-semibold shadow-lg transition-all duration-300"
+                >
+                    Go to PDF Chat →
+                </Link>
+            </motion.div>
+        </section>
+    );
 }
