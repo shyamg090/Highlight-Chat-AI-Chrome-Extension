@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Sidebar</title>
+    <link rel="stylesheet" href="sidebar.css" />
+  </head>
+  <body>
+    <div id="container">
+      <button id="close-btn" title="Close sidebar">×</button>
+      <div id="header">AI Summary</div>
+      <div
+        id="selected-text"
+        style="white-space: pre-wrap; margin-bottom: 12px"
+      ></div>
+      <div
+        id="content"
+        style="white-space: pre-wrap; flex-grow: 1; overflow-y: auto"
+      >
+        Loading previous chats...
+      </div>
+      <button id="save-btn">Save Insight</button>
+    </div>
+    <!-- <iframe
+      sandbox="allow-scripts allow-same-origin"
+      style="all: initial"
+    ></iframe> -->
+    <script src="sidebar.js"></script>
+  </body>
+</html>
